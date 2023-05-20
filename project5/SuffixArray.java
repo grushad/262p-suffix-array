@@ -3,13 +3,7 @@ package project5;
 import java.util.Comparator;
 import java.util.ArrayList;
 import java.util.Arrays;
-class Suffix{
-  // String suffix;
-  // int index;
-  // Suffix(String suffix, int index){
-  //   this.suffix = suffix;
-  //   this.index = index;
-  // }
+class Suffix{  
   int index, rank, next;
   Suffix(int index, int rank, int next){
     this.index = index;
@@ -26,10 +20,10 @@ public class SuffixArray {
     int len = S.length();
     Suffix[] suffixs = new Suffix[len];
     for(int i = 0; i < len; i++){
-      suffixs[i] = new Suffix(i, S.charAt(i) - 'a', 0); //since only lowercase alphabet      
+      suffixs[i] = new Suffix(i, S.charAt(i) - '$', 0); //since only lowercase alphabet      
     }
     for(int i = 0; i < len; i++){
-      suffixs[i].next = (i + 1 < len ? suffixs[i].rank : -1);
+      suffixs[i].next = (i + 1 < len ? suffixs[i + 1].rank : -1);
     }
 
     ArrayList<Integer> list = new ArrayList<>();
@@ -39,6 +33,10 @@ public class SuffixArray {
         if(s1.rank == s2.rank)
           return s1.next - s2.next;
         return s1.rank - s2.rank;
+        // if (s1.rank != s2.rank) 
+        //   return Integer.compare(s1.rank, s2.rank);
+        // return Integer.compare(s1.next, s2.next);
+
       }
     });
 
@@ -67,6 +65,9 @@ public class SuffixArray {
           if(s1.rank == s2.rank)
             return s1.next - s2.next;
           return s1.rank - s2.rank;
+          // if (s1.rank != s2.rank) 
+          //   return Integer.compare(s1.rank, s2.rank);
+          // return Integer.compare(s1.next, s2.next);
         }
       });
     }
@@ -74,6 +75,10 @@ public class SuffixArray {
       list.add(suffixs[i].index);
     }    
     return list;
+  }
+
+  void radixSort(Suffix[] arr){
+
   }
 
 }
