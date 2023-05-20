@@ -4,11 +4,17 @@ import java.util.Comparator;
 import java.util.ArrayList;
 import java.util.Arrays;
 class Suffix{
-  String suffix;
-  int index;
-  Suffix(String suffix, int index){
-    this.suffix = suffix;
+  // String suffix;
+  // int index;
+  // Suffix(String suffix, int index){
+  //   this.suffix = suffix;
+  //   this.index = index;
+  // }
+  int index, rank, next;
+  Suffix(int index, int rank, int next){
     this.index = index;
+    this.rank = rank;
+    this.next = next;
   }
 }
 public class SuffixArray {
@@ -20,14 +26,50 @@ public class SuffixArray {
     int len = S.length();
     Suffix[] suffixs = new Suffix[len];
     for(int i = 0; i < len; i++){
-      suffixs[i] = new Suffix(S.substring(i, len), i);    
+      suffixs[i] = new Suffix(i, S.charAt(i) - 'a', 0); //since only lowercase alphabet      
     }
+    for(int i = 0; i < len; i++){
+      suffixs[i].next = (i + 1 < len ? suffixs[i].rank : -1);
+    }
+
     ArrayList<Integer> list = new ArrayList<>();
+    //convert the below to radix sort algorithm to improve complexity
     Arrays.sort(suffixs, new Comparator<Suffix>(){
       public int compare(Suffix s1, Suffix s2){
-        return s1.suffix.compareTo(s2.suffix);
+        if(s1.rank == s2.rank)
+          return s1.next - s2.next;
+        return s1.rank - s2.rank;
       }
     });
+
+    int[] ind = new int[len];
+
+    for(int i = 4; i < 2 * len; i <<= 1){
+      int rank = 0, prev = suffixs[0].rank;
+      suffixs[0].rank = rank;
+      ind[suffixs[0].index] = 0;
+      for(int j = 1; j < len; j++){
+        prev = suffixs[j].rank;
+        if(suffixs[j].rank == prev && suffixs[j].next == suffixs[j - 1].next){          
+          suffixs[j].rank = rank;
+        }else{
+          suffixs[j].rank = ++rank;
+        }
+        ind[suffixs[j].index] = j;
+      }
+      for(int j = 0; j < len; j++){
+        int nextR = suffixs[j].index + i / 2;
+        suffixs[j].next = nextR < len ? suffixs[ind[nextR]].rank : -1;
+      }
+       //convert the below to radix sort algorithm to improve complexity
+      Arrays.sort(suffixs, new Comparator<Suffix>(){
+        public int compare(Suffix s1, Suffix s2){
+          if(s1.rank == s2.rank)
+            return s1.next - s2.next;
+          return s1.rank - s2.rank;
+        }
+      });
+    }
     for(int i = 0; i < len; i++){
       list.add(suffixs[i].index);
     }    
