@@ -46,11 +46,12 @@ public class SuffixArray {
       int rank = 0, prev = suffixs[0].rank;
       suffixs[0].rank = rank;
       ind[suffixs[0].index] = 0;
-      for(int j = 1; j < len; j++){
-        prev = suffixs[j].rank;
-        if(suffixs[j].rank == prev && suffixs[j].next == suffixs[j - 1].next){          
+      for(int j = 1; j < len; j++){                
+        if(suffixs[j].rank == prev && suffixs[j].next == suffixs[j - 1].next){  
+          prev = suffixs[j].rank;        
           suffixs[j].rank = rank;
         }else{
+          prev = suffixs[j].rank;
           suffixs[j].rank = ++rank;
         }
         ind[suffixs[j].index] = j;
@@ -77,8 +78,8 @@ public class SuffixArray {
     return list;
   }
 
-  void radixSort(Suffix[] arr){
+  // void radixSort(Suffix[] arr){
 
-  }
+  // }
 
 }
